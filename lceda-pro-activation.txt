@@ -1,0 +1,49 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+// Set up the LCD screen with I2C address (0x27 is common, but check your screen)
+LiquidCrystal_I2C lcd(0x27, 16, 2);  // 16 columns and 2 rows
+
+const int micPin = A0;  // חיישן המיקרוםון מחובר לאנלוג 0
+int micValue = 0;       // משתנה בשביל לשמור על ערך המיקרופון
+int volumeThreshold = 1023; // סף הערך בשביל לסווג את הווליום
+
+
+void setup() {
+  // מתחיל תקשורת עם המסך
+  lcd.begin(16, 2);
+  lcd.backlight();
+  
+  //  מדפיס על המסך את המשפט הנ"ל
+  lcd.setCursor(0, 0);
+  lcd.print("Microphone Level");
+  delay(1000);  // כמות הדיליי לפני שהמשפט מופיע
+  
+  // מתחיל תקשורת על מנת לזהות בעיות
+  Serial.begin(9600);
+}
+
+void loop() {
+  // קורא את הערך של המיקרופון
+  micValue = analogRead(micPin);
+  
+  // מדפיס את ערך המיקרופון 
+  Serial.println(micValue);
+  
+  // מוחק את המסך על מנת להדפיס את המשפט הנ"ל
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Volume level: ");
+  lcd.setCursor(0, 1);
+  
+  // מדפיס את ערך המיקרופון על המסך
+  lcd.print(micValue);
+  
+  // אם הערך של המיקרופון גדול מהווליום הוא מדפיס את הערך של המיקרופון
+  lcd.setCursor(16, 1);
+  if (micValue > volumeThreshold);
+  lcd.print (micValue);
+  
+  // מוסיף דיליי על מנת להפוך את הקריאה לקלה יותר
+  delay(250);
+}
